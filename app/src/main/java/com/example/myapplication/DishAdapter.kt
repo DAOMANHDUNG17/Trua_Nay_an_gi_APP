@@ -8,8 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class DishAdapter(
     private var dishList: List<Dish>,
@@ -41,7 +39,12 @@ class DishAdapter(
         holder.tvPrice.text = "${dish.price} đ"
         holder.tvDesc.text = dish.description
         
-        holder.ivImage.setImageResource(R.drawable.ic_launcher_background)
+        Glide.with(holder.itemView.context)
+            .load(dish.imageUrl)
+            .centerCrop()
+            .placeholder(android.R.color.darker_gray)
+            .error(android.R.color.darker_gray)
+            .into(holder.ivImage)
         
         val context = holder.itemView.context
         val prefsManager = SharedPrefsManager(context)

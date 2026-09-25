@@ -6,11 +6,14 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.Normalizer
+import java.util.regex.Pattern
 
 class SearchFragment : Fragment() {
     private lateinit var searchAdapter: DishAdapter
@@ -34,24 +37,59 @@ class SearchFragment : Fragment() {
         recyclerSearch.layoutManager = LinearLayoutManager(context)
         recyclerSearch.adapter = searchAdapter
 
+        // Lọc ngay khi người dùng gõ phím
         edtSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val keyword = s.toString().lowercase()
-                val filteredList = allDishes.filter { it.name.lowercase().contains(keyword) }
-                searchAdapter.filterList(filteredList)
-                
-                if (filteredList.isEmpty()) {
-                    tvNoResult.visibility = View.VISIBLE
-                    recyclerSearch.visibility = View.GONE
-                } else {
-                    tvNoResult.visibility = View.GONE
-                    recyclerSearch.visibility = View.VISIBLE
-                }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                filter(s.toString(), tvNoResult, recyclerSearch)
             }
         })
 
+        // Bấm nút Tìm kiếm trên bàn phím (Search / Done)
+        edtSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                filter(edtSearch.text.toString(), tvNoResult, recyclerSearch)
+                true
+            } else {
+                false
+            }
+        }
+
         return view
+    }
+
+    private fun filter(query: String, tvNoResult: TextView, recyclerSearch: RecyclerView) {
+        val normalizedQuery = unaccent(query.lowercase().trim())
+
+        val filteredList = if (normalizedQuery.isEmpty()) {
+            allDishes
+        } else {
+            allDishes.filter { dish ->
+                val nameNormalized = unaccent(dish.name.lowercase())
+                val categoryNormalized = unaccent(dish.category.lowercase())
+                nameNormalized.contains(normalizedQuery) || categoryNormalized.contains(normalizedQuery)
+            }
+        }
+
+        searchAdapter.filterList(filteredList)
+
+        if (filteredList.isEmpty()) {
+            tvNoResult.visibility = View.VISIBLE
+            recyclerSearch.visibility = View.GONE
+        } else {
+            tvNoResult.visibility = View.GONE
+            recyclerSearch.visibility = View.VISIBLE
+        }
+    }
+
+    // Hàm bỏ dấu tiếng Việt để tìm kiếm không dấu (vd: "pho" vẫn tìm ra "Phở")
+    private fun unaccent(text: String): String {
+        val temp = Normalizer.normalize(text, Normalizer.Form.NFD)
+        val pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+")
+        return pattern.matcher(temp)
+            .replaceAll("")
+            .replace('đ', 'd')
+            .replace('Đ', 'D')
     }
 }

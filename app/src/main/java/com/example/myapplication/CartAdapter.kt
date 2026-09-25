@@ -8,8 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class CartAdapter(
     private var cartList: List<CartItem>,
@@ -45,8 +43,9 @@ class CartAdapter(
         
         Glide.with(holder.itemView.context)
             .load(item.dish.imageUrl)
-            .transform(CenterCrop(), RoundedCorners(16))
+            .centerCrop()
             .placeholder(android.R.color.darker_gray)
+            .error(android.R.color.darker_gray)
             .into(holder.ivImage)
 
         holder.btnMinus.setOnClickListener {

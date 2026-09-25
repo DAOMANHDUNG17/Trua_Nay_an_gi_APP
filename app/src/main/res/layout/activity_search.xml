@@ -20,6 +20,8 @@
             android:id="@+id/edtSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
             android:background="@drawable/bg_search_bar"
             android:hint="Thèm món gì, gõ vào đây..."
             android:textColor="#212121"
