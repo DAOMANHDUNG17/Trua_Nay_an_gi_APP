@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F8F9FA">
+
+    <!-- Header Tìm kiếm -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:elevation="4dp">
+
+        <EditText
+            android:id="@+id/edtSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_search_bar"
+            android:hint="Thèm món gì, gõ vào đây..."
+            android:textColor="#212121"
+            android:textColorHint="#9E9E9E"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="16dp"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:drawablePadding="12dp"
+            android:drawableTint="#9E9E9E"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:clipToPadding="false"/>
+
+    <TextView
+        android:id="@+id/tvNoResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Oops! Không tìm thấy món này 🥺"
+        android:textColor="#757575"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="64dp"
+        android:visibility="gone" />
+
+</LinearLayout>
